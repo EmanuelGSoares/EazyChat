@@ -19,6 +19,7 @@ export default ({ user, chatlist, show, setShow }) => {
     }, [user]);
 
     const addNewChat = async (user2) => {
+        console.log(user, user2);
         await Api.addNewChat(user, user2);
         handleClose();
     }

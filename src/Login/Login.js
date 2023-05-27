@@ -1,22 +1,55 @@
-import React from 'react';
-import './Login.css';
-import Api from '../Api';
+import React, { useState } from 'react';
+import { auth } from '../firebase/firebase';
 
 export default ({ onReceive }) => {
-    const handleFacebookLogin = async () => {
-        let result = await Api.fbPopup();
 
-        if (result) {
-            onReceive(result.user);
-        } else {
-            alert('Erro!');
-        }
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loggedIn, setLoggedIn] = useState(false);
+  
+    const handleLogin = (e) => {
+      e.preventDefault();
+  
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // O usuário foi autenticado com sucesso
+          const user = userCredential.user;
+          setLoggedIn(true);
+          return user;
+        })
+        .catch((error) => {
+          // Ocorreu um erro durante a autenticação
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
+        
     }
+    if (loggedIn) {
+        onReceive(handleLogin);
 
+};
+  
     return (
-        <div className='login'>
-            <img className="login-univ" src={'http://images.educamaisbrasil.com.br/content/superior/instituicao/logo/g/universidade-de-vassouras.png'} alt="avatar" />
-            <button onClick={handleFacebookLogin}>Logar com Facebook</button>
-        </div>
+      <div>
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Entrar</button>
+        </form>
+      </div>
     );
-}
+
+};
+ 
