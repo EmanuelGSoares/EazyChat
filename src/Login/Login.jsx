@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { FiUser, FiLock } from 'react-icons/fi';
 
 const Container = styled.div`
   display: flex;
