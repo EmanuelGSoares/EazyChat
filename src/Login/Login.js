@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase/firebase';
+import { FiUser, FiLock } from 'react-icons/fi';
 
 export default ({ onReceive }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
+    const [error, setError] = useState('');
   
     const handleLogin = (e) => {
       e.preventDefault();
+
+      if (email === 'user@example.com' && password === 'password') {
+        setError('');
+        // Redirecionar ou executar ação desejada
+      } else {
+        setError('Credenciais inválidas. Tente novamente.');
+      }
   
       auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
@@ -30,26 +39,43 @@ export default ({ onReceive }) => {
 
 };
   
-    return (
-      <div>
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <input
+return (
+    <Background>
+    <Login_univ>
+        <img className="login-univ" src={'http://images.educamaisbrasil.com.br/content/superior/instituicao/logo/g/universidade-de-vassouras.png'} alt="avatar" />
+    </Login_univ>
+    <Container>
+      <LoginForm onSubmit={handleSubmit}>
+        <InputWrapper>
+          <InputIcon>
+            <FiUser />
+          </InputIcon>
+          <Input
             type="email"
-            placeholder="Email"
+            placeholder="Email Institucional"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          <input
+        </InputWrapper>
+        <InputWrapper>
+          <InputIcon>
+            <FiLock />
+          </InputIcon>
+          <Input
             type="password"
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
-          <button type="submit">Entrar</button>
-        </form>
-      </div>
-    );
+        </InputWrapper>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Button type="submit">Entrar</Button>
+      </LoginForm>
+    </Container>
+    </Background>
+  );
+  }
 
-};
  
