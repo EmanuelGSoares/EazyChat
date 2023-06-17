@@ -7,6 +7,7 @@ import ChatList from "./components/ChatList/ChatList";
 import ChatIntro from './components/ChatIntro/ChatIntro';
 import ChatWindow from './components/ChatWindow/ChatWindow';
 import NewChat from './components/NewChat/NewChat';
+import DropDown from './components/DropDown/DropDown';
 import Login from './Login/Login';
 
 import DonutLargeIcon from '@material-ui/icons/DonutLarge';
@@ -18,9 +19,11 @@ export default () => {
     const [chatList, setChatList] = useState([]);
     const [activeChat, setActiveChat] = useState({});
     const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null);
     const db = firestore;
 
     const [showNewChat, setShowNewChat] = useState(false);
+    const [showDropDown, setShowDropDown] = useState(false);
 
     useEffect(() => {
 
@@ -32,6 +35,9 @@ export default () => {
 
     const handleNewChat = () => {
         setShowNewChat(true);
+    }
+    const handleDropDown = () => {
+        setShowDropDown(true);
     }
 
     const handleLogoff = () => {
@@ -47,14 +53,15 @@ export default () => {
     const handleLoginData = async () => {
         
         const u = auth.currentUser;
-
+        //console.log(u.uid);
         const users = db.collection('users').doc(u.uid);
-        console.log(u);
-        
+
         try {
-            const doc = async () => users.get();
-            if (doc.exists) {
+            const docSnapshot = async () => users.get();
+            if (docSnapshot.exists) {
+                const userData = docSnapshot.data();
                 setUser(auth.currentUser);
+                setUserData(userData);
             } else {
                 let newUser = {
                     id: u.uid,
@@ -64,6 +71,7 @@ export default () => {
     
                 await Api.addUser(newUser);
                 setUser(newUser);
+                setUserData(newUser);
             }
         } catch (error) {
             console.log("Error getting document:", error);
@@ -82,20 +90,22 @@ export default () => {
                     show={showNewChat}
                     setShow={setShowNewChat}
                 />
+                
                 <header>
-                    <img className="header-avatar" src={'https://static3.tcdn.com.br/img/img_prod/460977/boneco_raphael_tartarugas_ninjas_s_h_figuarts_bandai_18375_1_20201211172802.jpg'} alt="avatar" />
+                    <img className="header-avatar" src={userData.avatar} alt="avatar" />
+                    <span className="nome-usuario"> { userData.name } </span>
                     <div className="header-buttons">
-                        <div className="header-btn">
-                            <DonutLargeIcon style={{ color: '#919191' }} />
-                        </div>
                         <div onClick={handleNewChat} className="header-btn">
                             <ChatIcon style={{ color: '#919191' }} />
                         </div>
-                        <div className="header-btn">
-                            <MoreVertIcon style={{ color: '#919191' }} />
-                        </div>
-                        <div className="header-btn">
-                            <button onClick={handleLogoff}>Sair</button>
+                        <div onClick={handleDropDown} className="header-btn">
+                            <DropDown
+                                 handleLogoff={handleLogoff}
+                                chatList={chatList}
+                                user={user}
+                                show={showDropDown}
+                                setShow={setShowDropDown}
+                            />
                         </div>
                     </div>
                 </header>
