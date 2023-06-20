@@ -129,5 +129,34 @@ export default {
                 });
             }
         }
+    },
+
+    sendMessageChatGPT: async (chatData, userId, type, body, users) => {
+        let now = new Date();
+        db.collection('chats').doc(chatData.chatId).update({
+            messages: firebase.firestore.FieldValue.arrayUnion({
+                type,
+                author: userId,
+                body,
+                date: now
+            })
+        });
+
+        for(let i in users) {
+            let u = await db.collection('users').doc(users[i]).get();
+            let uData = u.data();
+            if (uData.chats) {
+                let chats = [...uData.chats];
+                for (let e in chats) {
+                    if (chats[e].chatId === chatData.chatId) {
+                        chats[e].lastMessage = body;
+                        chats[e].lastMessageDate = now;
+                    }
+                }
+                db.collection('users').doc(users[i]).update({
+                    chats
+                });
+            }
+        }
     }
 };

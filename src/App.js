@@ -6,6 +6,7 @@ import Api from './Api';
 import ChatList from "./components/ChatList/ChatList";
 import ChatIntro from './components/ChatIntro/ChatIntro';
 import ChatWindow from './components/ChatWindow/ChatWindow';
+import ChatWindowChatGPT from './components/ChatWindowChatGPT/ChatWindowChatGPT';
 import NewChat from './components/NewChat/NewChat';
 import DropDown from './components/DropDown/DropDown';
 import Login from './Login/Login';
@@ -28,7 +29,7 @@ export default () => {
     useEffect(() => {
 
         if (user !== null) {
-            console.log(user);
+            //console.log(user);
             let unsub = Api.onChatList(user.uid, setChatList);
             return unsub;
         }
@@ -82,7 +83,7 @@ export default () => {
     if (user === null) {
         return (<Login onReceive={handleLoginData} />);
     }
-    console.log(activeChat); // pega informaçoes do chat clicado
+    console.log(activeChat.with); // pega informaçoes do chat clicado
     return (
         <div className="app-window">
             <div className="sidebar">
@@ -128,8 +129,14 @@ export default () => {
                 </div>
             </div>
             <div className="contentarea">
-                {activeChat.chatId !== undefined &&
+                {activeChat.chatId !== undefined && activeChat.with !== 'chatgpt' &&
                     <ChatWindow
+                        user={user}
+                        data={activeChat}
+                    />}
+                {activeChat.chatId === undefined && <ChatIntro />}
+                {activeChat.chatId !== undefined && activeChat.with == 'chatgpt' &&
+                    <ChatWindowChatGPT
                         user={user}
                         data={activeChat}
                     />}
