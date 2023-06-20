@@ -28,7 +28,8 @@ export default () => {
     useEffect(() => {
 
         if (user !== null) {
-            let unsub = Api.onChatList(user.id, setChatList);
+            console.log(user);
+            let unsub = Api.onChatList(user.uid, setChatList);
             return unsub;
         }
     }, [user]);
@@ -46,41 +47,42 @@ export default () => {
           setUser(null);
         }).catch((error) => {
           // Ocorreu um erro ao deslogar o usuário
-          console.log(error);
+          //console.log(error);
         });
       };
 
-    const handleLoginData = async () => {
-        
-        const u = auth.currentUser;
-        //console.log(u.uid);
-        const users = db.collection('users').doc(u.uid);
-
+      const handleLoginData = async () => {
         try {
-            const docSnapshot = async () => users.get();
-            if (docSnapshot.exists) {
-                const userData = docSnapshot.data();
-                setUser(auth.currentUser);
-                setUserData(userData);
-            } else {
-                let newUser = {
-                    id: u.uid,
-                    name: 'Emanuel',
-                    avatar: 'https://filestore.community.support.microsoft.com/api/images/6061bd47-2818-4f2b-b04a-5a9ddb6f6467?upload=true&fud_access=wJJIheezUklbAN2ppeDns8cDNpYs3nCYjgitr%2BfFBh2dqlqMuW7np3F6Utp%2FKMltnRRYFtVjOMO5tpbpW9UyRAwvLeec5emAPixgq9ta07Dgnp2aq5eJbnfd%2FU3qhn5498QChOTHl3NpYS7xR7zASsaF20jo4ICSz2XTm%2B3GDR4XitSm7nHRR843ku7uXQ4oF6innoBxMaSe9UfrAdMi7owFKjdP9m1UP2W5KAtfQLNQqewpIgNm8TVO4GO5v9sGqgqs3xWAuztC7LdeU1uK5MlYEg4tcMW8ax1kJeEuI7GF14QRdq%2FnahToC7uRfuyqXfrNDVU7TRYmeyQhkHZT14xQvDhOtAZUQgwPgSV7MB6sMVflnWvNdZwHEoyGCL5RTFCjNBO8WpT8zO%2FezZLj5Dhv6zUWQ2NOD%2FWlC5hpi%2Bw%3D'
-                };
-    
-                await Api.addUser(newUser);
-                setUser(newUser);
-                setUserData(newUser);
-            }
+          const u = auth.currentUser;
+          //console.log(u.uid);
+          const users = db.collection('users').doc(u.uid);
+      
+          const docSnapshot = await users.get();
+          //console.log(docSnapshot);
+          if (docSnapshot.exists) {
+            const userData = docSnapshot.data();
+            setUser(auth.currentUser);
+            setUserData(userData);
+          } else {
+            let newUser = {
+              id: u.uid,
+              name: 'João',
+              avatar: 'https://filestore.community.support.microsoft.com/api/images/6061bd47-2818-4f2b-b04a-5a9ddb6f6467?upload=true&fud_access=wJJIheezUklbAN2ppeDns8cDNpYs3nCYjgitr%2BfFBh2dqlqMuW7np3F6Utp%2FKMltnRRYFtVjOMO5tpbpW9UyRAwvLeec5emAPixgq9ta07Dgnp2aq5eJbnfd%2FU3qhn5498QChOTHl3NpYS7xR7zASsaF20jo4ICSz2XTm%2B3GDR4XitSm7nHRR843ku7uXQ4oF6innoBxMaSe9UfrAdMi7owFKjdP9m1UP2W5KAtfQLNQqewpIgNm8TVO4GO5v9sGqgqs3xWAuztC7LdeU1uK5MlYEg4tcMW8ax1kJeEuI7GF14QRdq%2FnahToC7uRfuyqXfrNDVU7TRYmeyQhkHZT14xQvDhOtAZUQgwPgSV7MB6sMVflnWvNdZwHEoyGCL5RTFCjNBO8WpT8zO%2FezZLj5Dhv6zUWQ2NOD%2FWlC5hpi%2Bw%3D',
+            };
+      
+            await Api.addUser(newUser);
+            setUser(newUser);
+            setUserData(newUser);
+          }
         } catch (error) {
-            console.log("Error getting document:", error);
+         //console.log("Error getting document:", error);
         }
-    };
+      };
 
     if (user === null) {
         return (<Login onReceive={handleLoginData} />);
     }
+    console.log(activeChat); // pega informaçoes do chat clicado
     return (
         <div className="app-window">
             <div className="sidebar">
@@ -93,7 +95,6 @@ export default () => {
                 
                 <header>
                     <img className="header-avatar" src={userData.avatar} alt="avatar" />
-                    <span className="nome-usuario"> { userData.name } </span>
                     <div className="header-buttons">
                         <div onClick={handleNewChat} className="header-btn">
                             <ChatIcon style={{ color: '#919191' }} />

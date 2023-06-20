@@ -13,17 +13,12 @@ export default ({ onReceive }) => {
   
     const handleLogin = (e) => {
       e.preventDefault();
-
-      if (email === 'user@example.com' && password === 'password') {
-        setError('');
-        // Redirecionar ou executar ação desejada
-      } else {
-        setError('Credenciais inválidas. Tente novamente.');
-      }
-  
+      
       auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
           // O usuário foi autenticado com sucesso
+          //console.log(userCredential);
+          setError('')
           const user = userCredential.user;
           setLoggedIn(true);
           return user;
@@ -32,19 +27,19 @@ export default ({ onReceive }) => {
           // Ocorreu um erro durante a autenticação
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
+          //console.log(errorCode, errorMessage);
+          setError('Credenciais inválidas. Tente novamente.'); 
         });
-        
-    }
+    };
     if (loggedIn) {
         onReceive(handleLogin);
 
 };
   
 return (
-    <styles.Background>
+  <styles.Background>
     <styles.Login_univ>
-        <img className="login-univ" src={'http://images.educamaisbrasil.com.br/content/superior/instituicao/logo/g/universidade-de-vassouras.png'} alt="avatar" />
+      <img className="login-univ" src={'http://images.educamaisbrasil.com.br/content/superior/instituicao/logo/g/universidade-de-vassouras.png'} alt="avatar" />
     </styles.Login_univ>
     <styles.Container>
       <styles.LoginForm onSubmit={handleLogin}>
@@ -73,10 +68,11 @@ return (
           />
         </styles.InputWrapper>
         <styles.Button type="submit">Entrar</styles.Button>
+        {error && <p>{error}</p>} {/* Adiciona a exibição do erro */}
       </styles.LoginForm>
     </styles.Container>
-    </styles.Background>
-  );
+  </styles.Background>
+);
   }
 
  

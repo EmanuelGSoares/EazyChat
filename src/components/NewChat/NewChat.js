@@ -7,25 +7,27 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 export default ({ user, chatlist, show, setShow }) => {
     const [list, setList] = useState([
     ]);
-
+    //console.log(user);
     useEffect(() => {
         const getList = async () => {
+            //console.log(user);
             if (user !== null) {
-                let results = await Api.getContactList(user.id);
+                let results = await Api.getContactList(user.uid);
                 setList(results);
+                //console.log(results);
             }
         }
         getList();
     }, [user]);
 
     const addNewChat = async (user2) => {
-        console.log(user, user2);
         await Api.addNewChat(user, user2);
+        //console.log(user, user2);
         handleClose();
-    }
+    };
     const handleClose = () => {
         setShow(false);
-    }
+    };
     return (
         <div className='newChat' style={{ left: show ? 0 : -415 }}>
             <div className='newChat-head'>

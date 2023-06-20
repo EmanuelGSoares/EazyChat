@@ -25,23 +25,32 @@ export default {
         let list = [];
         let results = await db.collection('users').get();
         results.forEach(result => {
-            let data = result.data();
-            if (result.id !== userId) {
-                list.push({
-                    id: result.id,
-                    name: data.name,
-                    avatar: data.avatar
-                });
-            }
+          let data = result.data();
+          if (result.id !== userId) {
+            list.push({
+              id: result.id,
+              name: data.name,
+              avatar: data.avatar
+            });
+          }
         });
         return list;
-    },
-    addNewChat: async (user, user2) => {
+      },
+    addNewChat: async (u, user2) => {
+        const querySnapshot = await db.collection('users').get();
+        let user = null;
+
+        querySnapshot.forEach(doc => {
+        if (doc.id == u.uid){
+            user = doc.data();
+        }
+        return;
+        });
         let newChat = await db.collection('chats').add({
             messages: [],
-            users: [user.id, user2.id]
+            users: [u.uid, user2.id]
         });
-        db.collection('users').doc(user.id).update({
+        db.collection('users').doc(u.uid).update({
             chats: firebase.firestore.FieldValue.arrayUnion({
                 chatId: newChat.id,
                 title: user2.name,
@@ -54,12 +63,14 @@ export default {
                 chatId: newChat.id,
                 title: user.name,
                 image: user.avatar,
-                with: user.id
+                with: u.uid
             })
         });
+        console.log(user2.id);
     },
     onChatList: (userId, setChatList) => {
         return db.collection('users').doc(userId).onSnapshot((doc) => {
+            //console.log(doc);
             if (doc.exists) {
                 let data = doc.data();
                 if (data.chats) {

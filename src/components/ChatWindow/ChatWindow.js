@@ -73,7 +73,8 @@ export default ({ user, data }) => {
     };
     const handleSendClick = () => {
         if (text !== '') {
-            Api.sendMessage(data, user.id, 'text', text, users);
+            console.log(user)
+            Api.sendMessage(data, user.uid, 'text', text, users);
             setText('');
             setEmojiOpen(false);
         }
