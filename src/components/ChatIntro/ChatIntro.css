@@ -1,5 +1,5 @@
 .chatIntro{
-    background-color: white;
+    background-color: #7c3336;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -10,14 +10,14 @@
 
 .chatIntro h1{
     font-size: 32px;
-    color: black;
+    color: white;
     font-weight: normal;
     margin-top: 30px;
 }
 
 .chatIntro h2{
     font-size: 25px;
-    color: rgb(85, 85, 85);
+    color: white;
     font-weight: normal;
     margin-top: 5px;
     line-height: 200px;
