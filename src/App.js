@@ -83,7 +83,7 @@ export default () => {
     if (user === null) {
         return (<Login onReceive={handleLoginData} />);
     }
-    console.log(activeChat.with); // pega informaçoes do chat clicado
+    //console.log(activeChat.with); // pega informaçoes do chat clicado
     return (
         <div className="app-window">
             <div className="sidebar">

@@ -66,7 +66,7 @@ export default {
                 with: u.uid
             })
         });
-        console.log(user2.id);
+        //console.log(user2.id);
     },
     onChatList: (userId, setChatList) => {
         return db.collection('users').doc(userId).onSnapshot((doc) => {
